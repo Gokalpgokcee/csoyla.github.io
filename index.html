@@ -117,7 +117,7 @@
             display: inline-block;
         }
 
-        .copy-btn, .toggle-comment-btn {
+        .copy-btn, .review-btn, .toggle-btn {
             background-color: var(--accent-color);
             color: var(--bg-color);
             border: none;
@@ -126,10 +126,12 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
             transition: background-color 0.2s, color 0.2s;
         }
 
-        .copy-btn:hover, .toggle-comment-btn:hover {
+        .copy-btn:hover, .review-btn:hover, .toggle-btn:hover {
             background-color: var(--accent-hover);
         }
 
@@ -166,71 +168,11 @@
             font-weight: bold;
         }
 
-        /* Yorum Bölümü Stilleri */
         .comments-section {
             margin-top: 20px;
             padding-top: 15px;
             border-top: 1px dashed var(--border-color);
             display: none;
-        }
-
-        .comment-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background-color: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-field {
-            background-color: #1e293b;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .input-field:focus {
-            border-color: var(--accent-color);
-        }
-
-        .input-nick {
-            flex: 2;
-        }
-
-        .input-rating {
-            flex: 1;
-        }
-
-        textarea.input-field {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .submit-btn {
-            background-color: #22c55e;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            align-self: flex-end;
-            transition: background-color 0.2s;
-        }
-
-        .submit-btn:hover {
-            background-color: #16a34a;
         }
 
         .comments-list {
@@ -267,6 +209,12 @@
             color: #cbd5e1;
         }
 
+        .no-comments {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -289,12 +237,6 @@
                 justify-content: space-between;
                 align-items: center;
             }
-            .rating-box {
-                margin-bottom: 0;
-            }
-            .form-row {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -302,13 +244,13 @@
 
     <header>
         <h1>CS 1.6 Sunucu Rehberi</h1>
-        <p>En iyi Counter-Strike 1.6 sunucularını keşfet, değerlendir ve canlı oyla!</p>
+        <p>En iyi Counter-Strike 1.6 sunucularını keşfet, değerlendir ve incele!</p>
     </header>
 
     <div class="container">
 
         <!-- Invicta Virtus Pro Sunucu Kartı -->
-        <div class="server-card" id="server-invicta">
+        <div class="server-card">
             <div class="server-header">
                 <div class="server-info">
                     <h3>Invicta Virtus Pro</h3>
@@ -321,38 +263,26 @@
                     <div class="ip-container">
                         <span class="ip-badge">connect 193.111.76.3:27015</span>
                         <button class="copy-btn" onclick="copyIp('193.111.76.3:27015', this)">IP Kopyala</button>
-                        <button class="toggle-comment-btn" onclick="toggleComments('invicta')">💬 Yorumlar & Oy Ver</button>
+                        
+                        <!-- LÜTFEN 'BURAYA_GOOGLE_FORM_LINKINI_YAPISTIR' YERINE KENDI FORM LINKINI YAZIN -->
+                        <a href="BURAYA_GOOGLE_FORM_LINKINI_YAPISTIR" target="_blank" class="review-btn">✍️ Yorum Yap & Oy Ver</a>
+                        <button class="toggle-btn" onclick="toggleComments()">💬 Onaylı Yorumlar</button>
                     </div>
                 </div>
                 <div class="server-actions">
                     <div class="rating-box">
                         <div class="rating-score" id="score-invicta">⭐ 5.0</div>
-                        <div class="rating-count" id="count-invicta">0 Oy / Canlı Değerlendirme</div>
+                        <div class="rating-count" id="count-invicta">Yönetici Onaylı</div>
                     </div>
                     <span class="status-verified">✓ İncelendi</span>
                 </div>
             </div>
 
-            <!-- Canlı Yorum ve Değerlendirme Alanı -->
-            <div class="comments-section" id="comments-section-invicta">
-                <div class="comment-form">
-                    <h4 style="font-size:0.95rem; color:var(--accent-color);">Sunucuyu Değerlendir & Yorum Yap</h4>
-                    <div class="form-row">
-                        <input type="text" id="nick-invicta" placeholder="Rumuz / Oyuncu Adınız" class="input-field input-nick">
-                        <select id="rating-invicta" class="input-field input-rating">
-                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                            <option value="3">⭐⭐⭐ (3/5)</option>
-                            <option value="2">⭐⭐ (2/5)</option>
-                            <option value="1">⭐ (1/5)</option>
-                        </select>
-                    </div>
-                    <textarea id="text-invicta" placeholder="Sunucu hakkındaki görüşleriniz..." class="input-field"></textarea>
-                    <button class="submit-btn" onclick="addComment('invicta')">Gönder</button>
-                </div>
-
-                <div class="comments-list" id="list-invicta">
-                    <!-- Yorumlar JavaScript ile buraya eklenecek -->
+            <!-- Onaylı Yorumlar Listesi -->
+            <div class="comments-section" id="comments-section">
+                <h4 style="font-size:0.95rem; color:var(--accent-color); margin-bottom:12px;">Yönetici Tarafından Onaylanmış Yorumlar</h4>
+                <div class="comments-list" id="comments-list">
+                    <p class="no-comments">Yorumlar yükleniyor...</p>
                 </div>
             </div>
         </div>
@@ -364,7 +294,8 @@
     </footer>
 
     <script>
-        // IP Kopyalama Fonksiyonu
+        const sheetPubUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRF77XWVDZ7a0uc1EHIcrAhsZwQJWFjobHBiSmmmwcHy8EyCn8gl9WhhAIFKwncw6rXhUJu2UCA-udc/pubhtml';
+
         function copyIp(ip, btnElement) {
             navigator.clipboard.writeText('connect ' + ip).then(() => {
                 const originalText = btnElement.innerText;
@@ -379,77 +310,61 @@
             });
         }
 
-        // Yorum Paneli Aç/Kapat
-        function toggleComments(serverId) {
-            const section = document.getElementById(`comments-section-${serverId}`);
-            if (section.style.display === 'block') {
-                section.style.display = 'none';
-            } else {
-                section.style.display = 'block';
+        function toggleComments() {
+            const section = document.getElementById('comments-section');
+            section.style.display = (section.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Google Sheet Verilerini Çekme Fonksiyonu
+        async function fetchApprovedComments() {
+            try {
+                const response = await fetch(sheetPubUrl);
+                const htmlText = await response.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const rows = Array.from(doc.querySelectorAll('table.waffle tbody tr'));
+
+                const approvedComments = [];
+                let totalScore = 0;
+
+                rows.forEach((row) => {
+                    const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText.trim());
+                    
+                    // Hücre indexleri: 1: Zaman, 2: Nick, 3: Puan, 4: Yorum, 5: Durum
+                    if (cells.length >= 5) {
+                        const nick = cells[2];
+                        const score = parseFloat(cells[3]);
+                        const comment = cells[4];
+                        const status = cells[5] ? cells[5].toLowerCase() : '';
+
+                        if (status.includes('onay') || status.includes('onaylandı')) {
+                            approvedComments.push({ nick, score, comment });
+                            totalScore += isNaN(score) ? 5 : score;
+                        }
+                    }
+                });
+
+                renderComments(approvedComments, totalScore);
+            } catch (error) {
+                console.error("Yorumlar çekilirken hata oluştu:", error);
+                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Henüz onaylanmış yorum bulunmuyor.</p>';
             }
         }
 
-        // Yorum Ekleme ve Oy Hesaplama Mantığı
-        function addComment(serverId) {
-            const nickInput = document.getElementById(`nick-${serverId}`);
-            const ratingSelect = document.getElementById(`rating-${serverId}`);
-            const textInput = document.getElementById(`text-${serverId}`);
+        function renderComments(comments, totalScore) {
+            const listEl = document.getElementById('comments-list');
+            const scoreEl = document.getElementById('score-invicta');
+            const countEl = document.getElementById('count-invicta');
 
-            const nick = nickInput.value.trim();
-            const rating = parseInt(ratingSelect.value);
-            const text = textInput.value.trim();
-
-            if (!nick || !text) {
-                alert('Lütfen hem adınızı hem de yorumunuzu doldurun!');
+            if (comments.length === 0) {
+                listEl.innerHTML = '<p class="no-comments">Henüz onaylanmış bir yorum yayınlanmadı.</p>';
                 return;
             }
 
-            const newComment = {
-                nick: nick,
-                rating: rating,
-                text: text,
-                date: new Date().toLocaleDateString('tr-TR')
-            };
-
-            // Kayıtlı yorumları al
-            let comments = JSON.parse(localStorage.getItem(`cs_comments_${serverId}`)) || [];
-            comments.unshift(newComment); // Yeni yorumu en üste ekle
-
-            // Hafızaya kaydet
-            localStorage.setItem(`cs_comments_${serverId}`, JSON.stringify(comments));
-
-            // Formu temizle
-            nickInput.value = '';
-            textInput.value = '';
-
-            // Arayüzü güncelle
-            loadComments(serverId);
-        }
-
-        // Yorumları ve Puanı Yükleme/Görüntüleme
-        function loadComments(serverId) {
-            const listElement = document.getElementById(`list-${serverId}`);
-            const scoreElement = document.getElementById(`score-${serverId}`);
-            const countElement = document.getElementById(`count-${serverId}`);
-
-            let comments = JSON.parse(localStorage.getItem(`cs_comments_${serverId}`)) || [];
-
-            // Eğer hiç yorum yoksa varsayılan 1-2 örnek yorum ekleyelim
-            if (comments.length === 0 && serverId === 'invicta') {
-                comments = [
-                    { nick: "ProPlayer_34", rating: 5, text: "Ping değerleri harika, mermiler çok temiz gidiyor. Tavsiye ederim!", date: "18.09.2026" },
-                    { nick: "CS_Kralı", rating: 5, text: "Geceleri adminler ilgili, klan maçları için birebir.", date: "19.09.2026" }
-                ];
-                localStorage.setItem(`cs_comments_${serverId}`, JSON.stringify(comments));
-            }
-
-            listElement.innerHTML = '';
-            let totalRating = 0;
-
+            listEl.innerHTML = '';
             comments.forEach(c => {
-                totalRating += c.rating;
-                const stars = '⭐'.repeat(c.rating);
-
+                const stars = '⭐'.repeat(isNaN(c.score) ? 5 : c.score);
                 const item = document.createElement('div');
                 item.className = 'comment-item';
                 item.innerHTML = `
@@ -457,28 +372,22 @@
                         <span class="comment-author">${escapeHtml(c.nick)}</span>
                         <span class="comment-stars">${stars}</span>
                     </div>
-                    <div class="comment-text">${escapeHtml(c.text)}</div>
+                    <div class="comment-text">${escapeHtml(c.comment)}</div>
                 `;
-                listElement.appendChild(item);
+                listEl.appendChild(item);
             });
 
-            // Puan ve Oy Sayısını Güncelle
-            if (comments.length > 0) {
-                const avg = (totalRating / comments.length).toFixed(1);
-                scoreElement.innerText = `⭐ ${avg}`;
-                countElement.innerText = `${comments.length} Oy / Canlı Değerlendirme`;
-            }
+            const avg = (totalScore / comments.length).toFixed(1);
+            scoreEl.innerText = `⭐ ${avg}`;
+            countEl.innerText = `${comments.length} Onaylı Oy`;
         }
 
-        // XSS Güvenliği İçin Metin Temizleme
         function escapeHtml(text) {
+            if (!text) return '';
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Sayfa yüklendiğinde yorumları getir
-        window.onload = function() {
-            loadComments('invicta');
-        };
+        window.onload = fetchApprovedComments;
     </script>
 
 </body>
