@@ -58,15 +58,17 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: border-color 0.2s ease;
         }
 
         .server-card:hover {
-            transform: translateY(-2px);
             border-color: var(--accent-color);
+        }
+
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .server-info h3 {
@@ -115,7 +117,7 @@
             display: inline-block;
         }
 
-        .copy-btn {
+        .copy-btn, .toggle-comment-btn {
             background-color: var(--accent-color);
             color: var(--bg-color);
             border: none;
@@ -127,7 +129,7 @@
             transition: background-color 0.2s, color 0.2s;
         }
 
-        .copy-btn:hover {
+        .copy-btn:hover, .toggle-comment-btn:hover {
             background-color: var(--accent-hover);
         }
 
@@ -164,6 +166,107 @@
             font-weight: bold;
         }
 
+        /* Yorum Bölümü Stilleri */
+        .comments-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            display: none;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            background-color: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-color);
+        }
+
+        .input-nick {
+            flex: 2;
+        }
+
+        .input-rating {
+            flex: 1;
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .submit-btn {
+            background-color: #22c55e;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            align-self: flex-end;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #16a34a;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comment-item {
+            background-color: #0f172a;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .comment-stars {
+            color: #facc15;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -174,7 +277,7 @@
         }
 
         @media (max-width: 768px) {
-            .server-card {
+            .server-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
@@ -189,6 +292,9 @@
             .rating-box {
                 margin-bottom: 0;
             }
+            .form-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -196,32 +302,58 @@
 
     <header>
         <h1>CS 1.6 Sunucu Rehberi</h1>
-        <p>En iyi Counter-Strike 1.6 sunucularını keşfet ve incele!</p>
+        <p>En iyi Counter-Strike 1.6 sunucularını keşfet, değerlendir ve canlı oyla!</p>
     </header>
 
     <div class="container">
 
         <!-- Invicta Virtus Pro Sunucu Kartı -->
-        <div class="server-card">
-            <div class="server-info">
-                <h3>Invicta Virtus Pro</h3>
-                <p>Mod: Pro Publica | Durum: Online 🟢</p>
-                <div class="server-tags">
-                    <span class="tag">Steam / Non-Steam</span>
-                    <span class="tag">7/24 Düşük Ping</span>
-                    <span class="tag">Pro Clan</span>
+        <div class="server-card" id="server-invicta">
+            <div class="server-header">
+                <div class="server-info">
+                    <h3>Invicta Virtus Pro</h3>
+                    <p>Mod: Pro Publica | Durum: Online 🟢</p>
+                    <div class="server-tags">
+                        <span class="tag">Steam / Non-Steam</span>
+                        <span class="tag">7/24 Düşük Ping</span>
+                        <span class="tag">Pro Clan</span>
+                    </div>
+                    <div class="ip-container">
+                        <span class="ip-badge">connect 193.111.76.3:27015</span>
+                        <button class="copy-btn" onclick="copyIp('193.111.76.3:27015', this)">IP Kopyala</button>
+                        <button class="toggle-comment-btn" onclick="toggleComments('invicta')">💬 Yorumlar & Oy Ver</button>
+                    </div>
                 </div>
-                <div class="ip-container">
-                    <span class="ip-badge">connect 193.111.76.3:27015</span>
-                    <button class="copy-btn" onclick="copyIp('193.111.76.3:27015', this)">IP Kopyala</button>
+                <div class="server-actions">
+                    <div class="rating-box">
+                        <div class="rating-score" id="score-invicta">⭐ 5.0</div>
+                        <div class="rating-count" id="count-invicta">0 Oy / Canlı Değerlendirme</div>
+                    </div>
+                    <span class="status-verified">✓ İncelendi</span>
                 </div>
             </div>
-            <div class="server-actions">
-                <div class="rating-box">
-                    <div class="rating-score">⭐ 4.9</div>
-                    <div class="rating-count">Onaylı Değerlendirme</div>
+
+            <!-- Canlı Yorum ve Değerlendirme Alanı -->
+            <div class="comments-section" id="comments-section-invicta">
+                <div class="comment-form">
+                    <h4 style="font-size:0.95rem; color:var(--accent-color);">Sunucuyu Değerlendir & Yorum Yap</h4>
+                    <div class="form-row">
+                        <input type="text" id="nick-invicta" placeholder="Rumuz / Oyuncu Adınız" class="input-field input-nick">
+                        <select id="rating-invicta" class="input-field input-rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                    </div>
+                    <textarea id="text-invicta" placeholder="Sunucu hakkındaki görüşleriniz..." class="input-field"></textarea>
+                    <button class="submit-btn" onclick="addComment('invicta')">Gönder</button>
                 </div>
-                <span class="status-verified">✓ İncelendi</span>
+
+                <div class="comments-list" id="list-invicta">
+                    <!-- Yorumlar JavaScript ile buraya eklenecek -->
+                </div>
             </div>
         </div>
 
@@ -232,6 +364,7 @@
     </footer>
 
     <script>
+        // IP Kopyalama Fonksiyonu
         function copyIp(ip, btnElement) {
             navigator.clipboard.writeText('connect ' + ip).then(() => {
                 const originalText = btnElement.innerText;
@@ -245,6 +378,107 @@
                 }, 2000);
             });
         }
+
+        // Yorum Paneli Aç/Kapat
+        function toggleComments(serverId) {
+            const section = document.getElementById(`comments-section-${serverId}`);
+            if (section.style.display === 'block') {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+            }
+        }
+
+        // Yorum Ekleme ve Oy Hesaplama Mantığı
+        function addComment(serverId) {
+            const nickInput = document.getElementById(`nick-${serverId}`);
+            const ratingSelect = document.getElementById(`rating-${serverId}`);
+            const textInput = document.getElementById(`text-${serverId}`);
+
+            const nick = nickInput.value.trim();
+            const rating = parseInt(ratingSelect.value);
+            const text = textInput.value.trim();
+
+            if (!nick || !text) {
+                alert('Lütfen hem adınızı hem de yorumunuzu doldurun!');
+                return;
+            }
+
+            const newComment = {
+                nick: nick,
+                rating: rating,
+                text: text,
+                date: new Date().toLocaleDateString('tr-TR')
+            };
+
+            // Kayıtlı yorumları al
+            let comments = JSON.parse(localStorage.getItem(`cs_comments_${serverId}`)) || [];
+            comments.unshift(newComment); // Yeni yorumu en üste ekle
+
+            // Hafızaya kaydet
+            localStorage.setItem(`cs_comments_${serverId}`, JSON.stringify(comments));
+
+            // Formu temizle
+            nickInput.value = '';
+            textInput.value = '';
+
+            // Arayüzü güncelle
+            loadComments(serverId);
+        }
+
+        // Yorumları ve Puanı Yükleme/Görüntüleme
+        function loadComments(serverId) {
+            const listElement = document.getElementById(`list-${serverId}`);
+            const scoreElement = document.getElementById(`score-${serverId}`);
+            const countElement = document.getElementById(`count-${serverId}`);
+
+            let comments = JSON.parse(localStorage.getItem(`cs_comments_${serverId}`)) || [];
+
+            // Eğer hiç yorum yoksa varsayılan 1-2 örnek yorum ekleyelim
+            if (comments.length === 0 && serverId === 'invicta') {
+                comments = [
+                    { nick: "ProPlayer_34", rating: 5, text: "Ping değerleri harika, mermiler çok temiz gidiyor. Tavsiye ederim!", date: "18.09.2026" },
+                    { nick: "CS_Kralı", rating: 5, text: "Geceleri adminler ilgili, klan maçları için birebir.", date: "19.09.2026" }
+                ];
+                localStorage.setItem(`cs_comments_${serverId}`, JSON.stringify(comments));
+            }
+
+            listElement.innerHTML = '';
+            let totalRating = 0;
+
+            comments.forEach(c => {
+                totalRating += c.rating;
+                const stars = '⭐'.repeat(c.rating);
+
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-author">${escapeHtml(c.nick)}</span>
+                        <span class="comment-stars">${stars}</span>
+                    </div>
+                    <div class="comment-text">${escapeHtml(c.text)}</div>
+                `;
+                listElement.appendChild(item);
+            });
+
+            // Puan ve Oy Sayısını Güncelle
+            if (comments.length > 0) {
+                const avg = (totalRating / comments.length).toFixed(1);
+                scoreElement.innerText = `⭐ ${avg}`;
+                countElement.innerText = `${comments.length} Oy / Canlı Değerlendirme`;
+            }
+        }
+
+        // XSS Güvenliği İçin Metin Temizleme
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Sayfa yüklendiğinde yorumları getir
+        window.onload = function() {
+            loadComments('invicta');
+        };
     </script>
 
 </body>
