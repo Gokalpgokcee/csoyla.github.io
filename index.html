@@ -15,406 +15,186 @@
             --border-color: #334155;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
+        header { text-align: center; padding: 30px; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
+        header h1 { color: var(--accent-color); }
+        .container { max-width: 800px; margin: 0 auto; }
+        .server-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .ip-badge { background: var(--bg-color); color: var(--accent-color); padding: 6px 12px; border-radius: 6px; font-family: monospace; border: 1px solid var(--border-color); }
+        .btn { background: var(--accent-color); color: var(--bg-color); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: var(--accent-hover); }
+        
+        .comment-form { background: #0f172a; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid var(--border-color); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px; background: #1e293b; border: 1px solid var(--border-color); color: #fff; border-radius: 6px;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .server-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: border-color 0.2s ease;
-        }
-
-        .server-card:hover {
-            border-color: var(--accent-color);
-        }
-
-        .server-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .server-info h3 {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            color: var(--text-main);
-        }
-
-        .server-info p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-        }
-
-        .server-tags {
-            display: flex;
-            gap: 8px;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background-color: #334155;
-            color: #cbd5e1;
-            font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .ip-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .ip-badge {
-            background-color: var(--bg-color);
-            color: var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.95rem;
-            border: 1px solid var(--border-color);
-            display: inline-block;
-        }
-
-        .copy-btn, .review-btn, .toggle-btn {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .copy-btn:hover, .review-btn:hover, .toggle-btn:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .server-actions {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .rating-box {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .rating-score {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #facc15;
-        }
-
-        .rating-count {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .status-verified {
-            color: #4ade80;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .comments-section {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed var(--border-color);
-            display: none;
-        }
-
-        .comments-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .comment-item {
-            background-color: #0f172a;
-            padding: 10px 14px;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent-color);
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-        }
-
-        .comment-author {
-            font-weight: bold;
-            color: var(--text-main);
-        }
-
-        .comment-stars {
-            color: #facc15;
-        }
-
-        .comment-text {
-            font-size: 0.9rem;
-            color: #cbd5e1;
-        }
-
-        .no-comments {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-style: italic;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-color);
-            margin-top: 50px;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .server-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .server-actions {
-                text-align: left;
-                width: 100%;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
+        .comments-list { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .comment-item { background: #0f172a; padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color); }
+        .comment-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .stars { color: #facc15; }
+        .error-msg { color: #ef4444; font-size: 0.9rem; margin-top: 10px; }
+        .success-msg { color: #22c55e; font-size: 0.9rem; margin-top: 10px; }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
     <header>
         <h1>CS 1.6 Sunucu Rehberi</h1>
-        <p>En iyi Counter-Strike 1.6 sunucularını keşfet, değerlendir ve incele!</p>
+        <p>Topluluk Tarafından Değerlendirilen En İyi Sunucular</p>
     </header>
 
     <div class="container">
-
-        <!-- Invicta Virtus Pro Sunucu Kartı -->
         <div class="server-card">
-            <div class="server-header">
-                <div class="server-info">
-                    <h3>Invicta Virtus Pro</h3>
-                    <p>Mod: Pro Publica | Durum: Online 🟢</p>
-                    <div class="server-tags">
-                        <span class="tag">Steam / Non-Steam</span>
-                        <span class="tag">7/24 Düşük Ping</span>
-                        <span class="tag">Pro Clan</span>
+            <h2>Invicta Virtus Pro</h2>
+            <p style="color: var(--text-muted); margin-bottom: 10px;">Pro Publica | Status: Online 🟢</p>
+            <span class="ip-badge">connect 193.111.76.3:27015</span>
+            
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+
+            <h3>Ortalama Puan: <span id="avg-score" style="color: #facc15;">⭐ 5.0</span> (<span id="total-count">0</span> Oy)</h3>
+
+            <div class="comment-form">
+                <h4>Yorum Yap & Oy Ver</h4>
+                <div id="form-container">
+                    <div class="form-group">
+                        <label>Rumuz (Nick):</label>
+                        <input type="text" id="nick" placeholder="Oyundaki Nickiniz" maxlength="20">
                     </div>
-                    <div class="ip-container">
-                        <span class="ip-badge">connect 193.111.76.3:27015</span>
-                        <button class="copy-btn" onclick="copyIp('193.111.76.3:27015', this)">IP Kopyala</button>
-                        <a href="https://forms.gle/SENIN_FORM_LINKIN" target="_blank" class="review-btn">✍️ Yorum Yap & Oy Ver</a>
-                        <button class="toggle-btn" onclick="toggleComments()">💬 Onaylı Yorumlar</button>
+                    <div class="form-group">
+                        <label>Puanınız:</label>
+                        <select id="score">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
                     </div>
-                </div>
-                <div class="server-actions">
-                    <div class="rating-box">
-                        <div class="rating-score" id="score-invicta">⭐ 5.0</div>
-                        <div class="rating-count" id="count-invicta">Yükleniyor...</div>
+                    <div class="form-group">
+                        <label>Yorumunuz:</label>
+                        <textarea id="comment" rows="3" placeholder="Sunucu hakkında ne düşünüyorsunuz?"></textarea>
                     </div>
-                    <span class="status-verified">✓ İncelendi</span>
+                    <button class="btn" onclick="submitComment()">Yorum Gönder</button>
+                    <div id="msg"></div>
                 </div>
             </div>
 
-            <!-- Onaylı Yorumlar Listesi -->
-            <div class="comments-section" id="comments-section">
-                <h4 style="font-size:0.95rem; color:var(--accent-color); margin-bottom:12px;">Yönetici Tarafından Onaylanmış Yorumlar</h4>
-                <div class="comments-list" id="comments-list">
-                    <p class="no-comments">Yorumlar yükleniyor...</p>
-                </div>
+            <h4 style="margin-top: 30px;">Son Yorumlar</h4>
+            <div class="comments-list" id="comments-list">
+                <p style="color: var(--text-muted);">Yorumlar yükleniyor...</p>
             </div>
         </div>
-
     </div>
 
-    <footer>
-        <p>&copy; 2026 CS 1.6 Sunucu Değerlendirme Platformu. Tüm hakları saklıdır.</p>
-    </footer>
-
     <script>
-        // Yayınlanmış Google E-Tablo Adresin
-        const sheetPubUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRF77XWVDZ7a0uc1EHIcrAhsZwQJWFjobHBiSmmmwcHy8EyCn8gl9WhhAIFKwncw6rXhUJu2UCA-udc/pubhtml';
+        const firebaseConfig = {
+            databaseURL: "https://csoyla-admin-default-rtdb.firebaseio.com/"
+        };
 
-        function copyIp(ip, btnElement) {
-            navigator.clipboard.writeText('connect ' + ip).then(() => {
-                const originalText = btnElement.innerText;
-                btnElement.innerText = 'Kopyalandı! ✓';
-                btnElement.style.backgroundColor = '#22c55e';
-                btnElement.style.color = '#ffffff';
-                setTimeout(() => {
-                    btnElement.innerText = originalText;
-                    btnElement.style.backgroundColor = '';
-                    btnElement.style.color = '';
-                }, 2000);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let userIp = "";
+
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => { userIp = data.ip; checkUserBanAndVote(); });
+
+        function checkUserBanAndVote() {
+            if(!userIp) return;
+            const cleanIp = userIp.replace(/\./g, "_");
+
+            db.ref('banned_ips/' + cleanIp).once('value', snapshot => {
+                if(snapshot.exists()) {
+                    document.getElementById('form-container').innerHTML = `<p class="error-msg">⛔ Bu IP adresinden yorum yapılması engellenmiştir.</p>`;
+                } else {
+                    db.ref('user_votes/' + cleanIp).once('value', voteSnap => {
+                        if(voteSnap.exists()) {
+                            document.getElementById('form-container').innerHTML = `<p class="success-msg">✓ Bu sunucuya zaten oy verdiniz. Her IP sadece 1 kez oy kullanabilir.</p>`;
+                        }
+                    });
+                }
             });
         }
 
-        function toggleComments() {
-            const section = document.getElementById('comments-section');
-            section.style.display = (section.style.display === 'block') ? 'none' : 'block';
-        }
+        function submitComment() {
+            const nick = document.getElementById('nick').value.trim();
+            const score = parseInt(document.getElementById('score').value);
+            const comment = document.getElementById('comment').value.trim();
+            const msgEl = document.getElementById('msg');
 
-        async function fetchApprovedComments() {
-            try {
-                // Ön bellek engellemek için anlık zaman damgası ekliyoruz
-                const fetchUrl = sheetPubUrl + '?v=' + new Date().getTime();
-                const response = await fetch(fetchUrl);
-                const htmlText = await response.text();
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-                const rows = Array.from(doc.querySelectorAll('table.waffle tbody tr'));
-
-                const approvedComments = [];
-                let totalScore = 0;
-
-                rows.forEach((row) => {
-                    // Boş olmayan hücreleri al
-                    const cells = Array.from(row.querySelectorAll('td'))
-                                     .map(td => td.innerText.trim())
-                                     .filter(text => text !== '');
-
-                    if (cells.length === 0) return;
-
-                    // Satırda "onay" geçen herhangi bir yer var mı kontrol et
-                    const isApproved = cells.some(c => c.toLowerCase().includes('onay'));
-
-                    if (isApproved) {
-                        // Zaman damgası hariç verileri eşleştir
-                        let nick = 'Anonim';
-                        let score = 5;
-                        let comment = '';
-
-                        // Hücreler içerisinden sayısal olanı Puan, uzun olanı Yorum al
-                        cells.forEach(val => {
-                            const num = parseFloat(val);
-                            if (!isNaN(num) && num >= 1 && num <= 5 && !val.includes('/') && !val.includes('.')) {
-                                score = num;
-                            } else if (val.length > 2 && !val.toLowerCase().includes('onay') && !val.includes(':')) {
-                                if (nick === 'Anonim') {
-                                    nick = val;
-                                } else {
-                                    comment = val;
-                                }
-                            }
-                        });
-
-                        if (comment === '') comment = nick; // Tek metin varsa yorum olarak geç
-
-                        approvedComments.push({ nick, score, comment });
-                        totalScore += score;
-                    }
-                });
-
-                renderComments(approvedComments, totalScore);
-
-            } catch (error) {
-                console.error("Hata:", error);
-                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Yorumlar şu an çekilemedi.</p>';
-                document.getElementById('count-invicta').innerText = '0 Oy';
-            }
-        }
-
-        function renderComments(comments, totalScore) {
-            const listEl = document.getElementById('comments-list');
-            const scoreEl = document.getElementById('score-invicta');
-            const countEl = document.getElementById('count-invicta');
-
-            if (comments.length === 0) {
-                listEl.innerHTML = '<p class="no-comments">Henüz onaylanmış bir yorum bulunmuyor.</p>';
-                scoreEl.innerText = '⭐ 5.0';
-                countEl.innerText = '0 Onaylı Oy';
+            if(!nick || !comment) {
+                msgEl.className = 'error-msg';
+                msgEl.innerText = 'Lütfen rumuz ve yorum alanlarını doldurun.';
                 return;
             }
 
+            if(!userIp) {
+                msgEl.className = 'error-msg';
+                msgEl.innerText = 'IP adresiniz doğrulanamadı, lütfen sayfayı yenileyin.';
+                return;
+            }
+
+            const cleanIp = userIp.replace(/\./g, "_");
+
+            const newCommentRef = db.ref('comments').push();
+            newCommentRef.set({
+                nick: nick,
+                score: score,
+                comment: comment,
+                ip: userIp,
+                timestamp: Date.now()
+            }).then(() => {
+                db.ref('user_votes/' + cleanIp).set(true);
+                msgEl.className = 'success-msg';
+                msgEl.innerText = 'Yorumunuz başarıyla yayınlandı!';
+                setTimeout(() => location.reload(), 1500);
+            });
+        }
+
+        db.ref('comments').on('value', snapshot => {
+            const listEl = document.getElementById('comments-list');
             listEl.innerHTML = '';
-            comments.forEach(c => {
-                const stars = '⭐'.repeat(Math.min(Math.max(Math.round(c.score), 1), 5));
+            
+            let total = 0;
+            let count = 0;
+
+            if(!snapshot.exists()) {
+                listEl.innerHTML = '<p style="color: var(--text-muted);">Henüz yorum yapılmamış.</p>';
+                return;
+            }
+
+            snapshot.forEach(child => {
+                const data = child.val();
+                total += data.score;
+                count++;
+
+                const stars = '⭐'.repeat(data.score);
                 const item = document.createElement('div');
                 item.className = 'comment-item';
                 item.innerHTML = `
                     <div class="comment-header">
-                        <span class="comment-author">${escapeHtml(c.nick)}</span>
-                        <span class="comment-stars">${stars}</span>
+                        <span>${escapeHtml(data.nick)}</span>
+                        <span class="stars">${stars}</span>
                     </div>
-                    <div class="comment-text">${escapeHtml(c.comment)}</div>
+                    <div>${escapeHtml(data.comment)}</div>
                 `;
                 listEl.appendChild(item);
             });
 
-            const avg = (totalScore / comments.length).toFixed(1);
-            scoreEl.innerText = `⭐ ${avg}`;
-            countEl.innerText = `${comments.length} Onaylı Oy`;
-        }
+            document.getElementById('avg-score').innerText = `⭐ ${(total / count).toFixed(1)}`;
+            document.getElementById('total-count').innerText = count;
+        });
 
         function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
-
-        // Sayfa yüklendiğinde çalıştır
-        window.onload = fetchApprovedComments;
     </script>
-
 </body>
 </html>
