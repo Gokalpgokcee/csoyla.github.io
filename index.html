@@ -292,8 +292,7 @@
     <footer>
         <p>&copy; 2026 CS 1.6 Sunucu Değerlendirme Platformu. Tüm hakları saklıdır.</p>
     </footer>
-
-    <script>
+<script>
         const sheetPubUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRF77XWVDZ7a0uc1EHIcrAhsZwQJWFjobHBiSmmmwcHy8EyCn8gl9WhhAIFKwncw6rXhUJu2UCA-udc/pubhtml';
 
         function copyIp(ip, btnElement) {
@@ -315,10 +314,10 @@
             section.style.display = (section.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Google Sheet Verilerini Çekme Fonksiyonu
         async function fetchApprovedComments() {
             try {
-                const response = await fetch(sheetPubUrl);
+                // Önleme için rastgele parametre ekleyerek güncel veriyi çekiyoruz
+                const response = await fetch(sheetPubUrl + '?cachebust=' + new Date().getTime());
                 const htmlText = await response.text();
 
                 const parser = new DOMParser();
@@ -331,24 +330,26 @@
                 rows.forEach((row) => {
                     const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText.trim());
                     
-                    // Hücre indexleri: 1: Zaman, 2: Nick, 3: Puan, 4: Yorum, 5: Durum
-                    if (cells.length >= 5) {
-                        const nick = cells[2];
-                        const score = parseFloat(cells[3]);
-                        const comment = cells[4];
-                        const status = cells[5] ? cells[5].toLowerCase() : '';
+                    // Satırda en az bir yerde "onay" kelimesi geçiyor mu kontrol et
+                    const isApproved = cells.some(cell => cell.toLowerCase().includes('onay'));
 
-                        if (status.includes('onay') || status.includes('onaylandı')) {
-                            approvedComments.push({ nick, score, comment });
-                            totalScore += isNaN(score) ? 5 : score;
-                        }
+                    if (isApproved && cells.length >= 4) {
+                        // Esnek sütun çekme (Boş olmayan sütunları ayıklar)
+                        const contentCells = cells.filter(c => c !== '');
+                        
+                        const nick = contentCells[1] || 'Anonim';
+                        const score = parseFloat(contentCells[2]) || 5;
+                        const comment = contentCells[3] || 'Yorum yok';
+
+                        approvedComments.push({ nick, score, comment });
+                        totalScore += score;
                     }
                 });
 
                 renderComments(approvedComments, totalScore);
             } catch (error) {
                 console.error("Yorumlar çekilirken hata oluştu:", error);
-                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Henüz onaylanmış yorum bulunmuyor.</p>';
+                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Yorumlar yüklenirken bir sorun oluştu.</p>';
             }
         }
 
@@ -358,13 +359,13 @@
             const countEl = document.getElementById('count-invicta');
 
             if (comments.length === 0) {
-                listEl.innerHTML = '<p class="no-comments">Henüz onaylanmış bir yorum yayınlanmadı.</p>';
+                listEl.innerHTML = '<p class="no-comments">Henüz onaylanmış bir yorum bulunmuyor.</p>';
                 return;
             }
 
             listEl.innerHTML = '';
             comments.forEach(c => {
-                const stars = '⭐'.repeat(isNaN(c.score) ? 5 : c.score);
+                const stars = '⭐'.repeat(Math.min(Math.max(Math.round(c.score), 1), 5));
                 const item = document.createElement('div');
                 item.className = 'comment-item';
                 item.innerHTML = `
@@ -389,6 +390,4 @@
 
         window.onload = fetchApprovedComments;
     </script>
-
-</body>
-</html>
+   
