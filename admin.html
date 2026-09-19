@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Yönetim Paneli</title>
+    <style>
+        body { background: #0f172a; color: #fff; font-family: sans-serif; padding: 20px; }
+        .login-box { max-width: 300px; margin: 100px auto; background: #1e293b; padding: 20px; border-radius: 8px; text-align: center; }
+        input { width: 100%; padding: 8px; margin: 10px 0; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 4px; }
+        button { background: #38bdf8; border: none; padding: 8px 16px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .table { width: 100%; max-width: 1000px; margin: 20px auto; border-collapse: collapse; }
+        .table th, .table td { border: 1px solid #334155; padding: 10px; text-align: left; }
+        .table th { background: #1e293b; }
+        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-ban { background: #f97316; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <div id="login-screen" class="login-box">
+        <h3>Admin Girişi</h3>
+        <input type="password" id="admin-pass" placeholder="Şifrenizi Girin">
+        <button onclick="login()">Giriş Yap</button>
+        <p id="error" style="color:red; margin-top:10px;"></p>
+    </div>
+
+    <div id="admin-panel" style="display:none;">
+        <h2>Yorum Yönetim Paneli</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nick</th>
+                    <th>Puan</th>
+                    <th>Yorum</th>
+                    <th>IP Adresi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="admin-list"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // İSTEDİĞİN ADMİN ŞİFRESİNİ BURAYA YAZ
+        const ADMIN_PASSWORD = "gokalpgokcee2013"; 
+
+        const firebaseConfig = {
+            databaseURL: "https://csoyla-admin-default-rtdb.firebaseio.com/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function login() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === ADMIN_PASSWORD) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                loadComments();
+            } else {
+                document.getElementById('error').innerText = 'Hatalı Şifre!';
+            }
+        }
+
+        function loadComments() {
+            db.ref('comments').on('value', snapshot => {
+                const list = document.getElementById('admin-list');
+                list.innerHTML = '';
+
+                if(!snapshot.exists()) {
+                    list.innerHTML = '<tr><td colspan="5">Henüz yorum bulunmuyor.</td></tr>';
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const key = child.key;
+                    const data = child.val();
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.nick}</td>
+                        <td>⭐ ${data.score}</td>
+                        <td>${data.comment}</td>
+                        <td><code>${data.ip}</code></td>
+                        <td>
+                            <button class="btn-delete" onclick="deleteComment('${key}')">Sil</button>
+                            <button class="btn-ban" onclick="banIp('${data.ip}')">IP Banla</button>
+                        </td>
+                    `;
+                    list.appendChild(row);
+                });
+            });
+        }
+
+        function deleteComment(key) {
+            if(confirm('Bu yorumu silmek istediğinize emin misiniz?')) {
+                db.ref('comments/' + key).remove();
+            }
+        }
+
+        function banIp(ip) {
+            if(confirm(`${ip} adresini banlamak istiyor musunuz? Kullanıcının yorum yapması engellenecektir.`)) {
+                const cleanIp = ip.replace(/\./g, "_");
+                db.ref('banned_ips/' + cleanIp).set(true).then(() => {
+                    alert('IP Adresi Başarıyla Banlandı!');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
