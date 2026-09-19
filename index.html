@@ -13,82 +13,134 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
+            --danger: #ef4444;
+            --success: #22c55e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
-        header { text-align: center; padding: 30px; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
-        header h1 { color: var(--accent-color); }
-        .container { max-width: 800px; margin: 0 auto; }
-        .server-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .ip-badge { background: var(--bg-color); color: var(--accent-color); padding: 6px 12px; border-radius: 6px; font-family: monospace; border: 1px solid var(--border-color); }
-        .btn { background: var(--accent-color); color: var(--bg-color); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn:hover { background: var(--accent-hover); }
         
-        .comment-form { background: #0f172a; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid var(--border-color); }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        header h1 { color: var(--accent-color); font-size: 1.8rem; }
+        .auth-buttons { display: flex; gap: 10px; align-items: center; }
+
+        .container { max-width: 900px; margin: 0 auto; }
+        .btn { background: var(--accent-color); color: var(--bg-color); border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; font-size: 0.9rem; }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--border-color); color: var(--text-main); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; }
+        .close-modal { position: absolute; top: 10px; right: 15px; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; }
+
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 10px; background: #1e293b; border: 1px solid var(--border-color); color: #fff; border-radius: 6px;
-        }
-        .comments-list { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .comment-item { background: #0f172a; padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color); }
-        .comment-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.85rem; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 0.9rem; }
+        
+        .server-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .server-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .ip-badge { background: var(--bg-color); color: var(--accent-color); padding: 6px 12px; border-radius: 6px; font-family: monospace; border: 1px solid var(--border-color); font-size: 0.9rem; }
+        
+        .comments-section { margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 15px; }
+        .comment-item { background: #0f172a; padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color); margin-bottom: 10px; }
+        .comment-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; }
         .stars { color: #facc15; }
-        .error-msg { color: #ef4444; font-size: 0.9rem; margin-top: 10px; }
-        .success-msg { color: #22c55e; font-size: 0.9rem; margin-top: 10px; }
+        
+        .msg { font-size: 0.85rem; margin-top: 8px; }
+        .msg-error { color: var(--danger); }
+        .msg-success { color: var(--success); }
+        .char-counter { font-size: 0.75rem; color: var(--text-muted); text-align: right; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 </head>
 <body>
 
-    <header>
-        <h1>CS 1.6 Sunucu Rehberi</h1>
-        <p>Topluluk Tarafından Değerlendirilen En İyi Sunucular</p>
-    </header>
-
     <div class="container">
-        <div class="server-card">
-            <h2>Invicta Virtus Pro</h2>
-            <p style="color: var(--text-muted); margin-bottom: 10px;">Pro Publica | Status: Online 🟢</p>
-            <span class="ip-badge">connect 193.111.76.3:27015</span>
-            
-            <hr style="border-color: var(--border-color); margin: 20px 0;">
-
-            <h3>Ortalama Puan: <span id="avg-score" style="color: #facc15;">⭐ 5.0</span> (<span id="total-count">0</span> Oy)</h3>
-
-            <div class="comment-form">
-                <h4>Yorum Yap & Oy Ver</h4>
-                <div id="form-container">
-                    <div class="form-group">
-                        <label>Rumuz (Nick):</label>
-                        <input type="text" id="nick" placeholder="Oyundaki Nickiniz" maxlength="20">
-                    </div>
-                    <div class="form-group">
-                        <label>Puanınız:</label>
-                        <select id="score">
-                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                            <option value="3">⭐⭐⭐ (3/5)</option>
-                            <option value="2">⭐⭐ (2/5)</option>
-                            <option value="1">⭐ (1/5)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Yorumunuz:</label>
-                        <textarea id="comment" rows="3" placeholder="Sunucu hakkında ne düşünüyorsunuz?"></textarea>
-                    </div>
-                    <button class="btn" onclick="submitComment()">Yorum Gönder</button>
-                    <div id="msg"></div>
-                </div>
+        <header>
+            <div>
+                <h1>CS 1.6 Sunucu Rehberi</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Oy Ver, İncele ve Kendi Sunucunu Ekle</p>
             </div>
-
-            <h4 style="margin-top: 30px;">Son Yorumlar</h4>
-            <div class="comments-list" id="comments-list">
-                <p style="color: var(--text-muted);">Yorumlar yükleniyor...</p>
+            <div class="auth-buttons" id="auth-container">
+                <button class="btn btn-secondary" onclick="openModal('login-modal')">Giriş Yap</button>
+                <button class="btn" onclick="openModal('register-modal')">Kayıt Ol</button>
             </div>
+        </header>
+
+        <!-- Sunucu Ekleme Butonu (Giriş Yapmış Kullanıcılara Görünür) -->
+        <div id="add-server-wrapper" style="display: none; margin-bottom: 20px; text-align: right;">
+            <button class="btn" onclick="openModal('add-server-modal')" style="background-color: var(--success); color: #fff;">+ Yeni Sunucu Ekle</button>
+        </div>
+
+        <!-- Onaylanmış Sunucular Listesi -->
+        <div id="servers-list">
+            <p style="color: var(--text-muted);">Sunucular yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Giriş Modalı -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('login-modal')">&times;</span>
+            <h3 style="margin-bottom: 15px;">Giriş Yap</h3>
+            <div class="form-group">
+                <label>E-Posta:</label>
+                <input type="email" id="login-email">
+            </div>
+            <div class="form-group">
+                <label>Şifre:</label>
+                <input type="password" id="login-password">
+            </div>
+            <button class="btn" style="width: 100%;" onclick="handleLogin()">Giriş Yap</button>
+            <div class="msg" id="login-msg"></div>
+        </div>
+    </div>
+
+    <!-- Kayıt Ol Modalı -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('register-modal')">&times;</span>
+            <h3 style="margin-bottom: 15px;">Kayıt Ol</h3>
+            <div class="form-group">
+                <label>Rumuz / Oyundaki Nick:</label>
+                <input type="text" id="reg-nick" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label>E-Posta:</label>
+                <input type="email" id="reg-email">
+            </div>
+            <div class="form-group">
+                <label>Şifre:</label>
+                <input type="password" id="reg-password">
+            </div>
+            <button class="btn" style="width: 100%;" onclick="handleRegister()">Kayıt Ol</button>
+            <div class="msg" id="reg-msg"></div>
+        </div>
+    </div>
+
+    <!-- Sunucu Ekle Modalı -->
+    <div class="modal" id="add-server-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('add-server-modal')">&times;</span>
+            <h3 style="margin-bottom: 15px;">Sunucu Ekle</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">Eklediğiniz sunucu admin onayından geçtikten sonra listede yayınlanacaktır.</p>
+            <div class="form-group">
+                <label>Sunucu Adı:</label>
+                <input type="text" id="srv-name" placeholder="Örn: Invicta Virtus Pro">
+            </div>
+            <div class="form-group">
+                <label>Mod / Tür:</label>
+                <input type="text" id="srv-mod" placeholder="Örn: Pro Public, Jailbreak, CSDM">
+            </div>
+            <div class="form-group">
+                <label>IP Adresi:</label>
+                <input type="text" id="srv-ip" placeholder="Örn: 193.111.76.3:27015">
+            </div>
+            <button class="btn" style="width: 100%;" onclick="handleAddServer()">Onaya Gönder</button>
+            <div class="msg" id="srv-msg"></div>
         </div>
     </div>
 
@@ -99,100 +151,231 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        const auth = firebase.auth();
 
+        let currentUser = null;
         let userIp = "";
+        const badWords = ["küfür1", "küfür2", "reklam", "amk", "aq", "sg"]; // Küfür/Spam Filtresi
 
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
-            .then(data => { userIp = data.ip; checkUserBanAndVote(); });
+            .then(data => { userIp = data.ip; });
 
-        function checkUserBanAndVote() {
-            if(!userIp) return;
-            const cleanIp = userIp.replace(/\./g, "_");
+        // Kullanıcı Durum Takibi
+        auth.onAuthStateChanged(user => {
+            const authContainer = document.getElementById('auth-container');
+            const addServerBtn = document.getElementById('add-server-wrapper');
 
-            db.ref('banned_ips/' + cleanIp).once('value', snapshot => {
-                if(snapshot.exists()) {
-                    document.getElementById('form-container').innerHTML = `<p class="error-msg">⛔ Bu IP adresinden yorum yapılması engellenmiştir.</p>`;
-                } else {
-                    db.ref('user_votes/' + cleanIp).once('value', voteSnap => {
-                        if(voteSnap.exists()) {
-                            document.getElementById('form-container').innerHTML = `<p class="success-msg">✓ Bu sunucuya zaten oy verdiniz. Her IP sadece 1 kez oy kullanabilir.</p>`;
-                        }
-                    });
-                }
-            });
+            if (user) {
+                currentUser = user;
+                authContainer.innerHTML = `
+                    <span style="font-size:0.9rem; color:var(--accent-color);">👤 ${escapeHtml(user.displayName || 'Kullanıcı')}</span>
+                    <button class="btn btn-secondary" onclick="auth.signOut()">Çıkış Yap</button>
+                `;
+                addServerBtn.style.display = 'block';
+            } else {
+                currentUser = null;
+                authContainer.innerHTML = `
+                    <button class="btn btn-secondary" onclick="openModal('login-modal')">Giriş Yap</button>
+                    <button class="btn" onclick="openModal('register-modal')">Kayıt Ol</button>
+                `;
+                addServerBtn.style.display = 'none';
+            }
+        });
+
+        // Modallar
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Kayıt Ol
+        function handleRegister() {
+            const nick = document.getElementById('reg-nick').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const pass = document.getElementById('reg-password').value;
+            const msg = document.getElementById('reg-msg');
+
+            if(!nick || !email || !pass) { msg.className = 'msg msg-error'; msg.innerText = 'Tüm alanları doldurun.'; return; }
+
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then(res => {
+                    return res.user.updateProfile({ displayName: nick });
+                })
+                .then(() => {
+                    closeModal('register-modal');
+                    location.reload();
+                })
+                .catch(err => { msg.className = 'msg msg-error'; msg.innerText = err.message; });
         }
 
-        function submitComment() {
-            const nick = document.getElementById('nick').value.trim();
-            const score = parseInt(document.getElementById('score').value);
-            const comment = document.getElementById('comment').value.trim();
-            const msgEl = document.getElementById('msg');
+        // Giriş Yap
+        function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-password').value;
+            const msg = document.getElementById('login-msg');
 
-            if(!nick || !comment) {
-                msgEl.className = 'error-msg';
-                msgEl.innerText = 'Lütfen rumuz ve yorum alanlarını doldurun.';
-                return;
-            }
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(() => closeModal('login-modal'))
+                .catch(err => { msg.className = 'msg msg-error'; msg.innerText = 'Hatalı e-posta veya şifre.'; });
+        }
 
-            if(!userIp) {
-                msgEl.className = 'error-msg';
-                msgEl.innerText = 'IP adresiniz doğrulanamadı, lütfen sayfayı yenileyin.';
-                return;
-            }
+        // Sunucu Ekle (Onay Bekleyenler Tablosuna Kaydeder)
+        function handleAddServer() {
+            const name = document.getElementById('srv-name').value.trim();
+            const mod = document.getElementById('srv-mod').value.trim();
+            const ip = document.getElementById('srv-ip').value.trim();
+            const msg = document.getElementById('srv-msg');
 
-            const cleanIp = userIp.replace(/\./g, "_");
+            if(!name || !mod || !ip) { msg.className = 'msg msg-error'; msg.innerText = 'Tüm alanları doldurun.'; return; }
 
-            const newCommentRef = db.ref('comments').push();
-            newCommentRef.set({
-                nick: nick,
-                score: score,
-                comment: comment,
-                ip: userIp,
+            db.ref('pending_servers').push({
+                name: name,
+                mod: mod,
+                ip: ip,
+                addedBy: currentUser ? currentUser.displayName : 'Anonim',
                 timestamp: Date.now()
             }).then(() => {
-                db.ref('user_votes/' + cleanIp).set(true);
-                msgEl.className = 'success-msg';
-                msgEl.innerText = 'Yorumunuz başarıyla yayınlandı!';
-                setTimeout(() => location.reload(), 1500);
+                msg.className = 'msg msg-success';
+                msg.innerText = 'Sunucu onaya gönderildi! Admin onayından sonra yayınlanacaktır.';
+                setTimeout(() => closeModal('add-server-modal'), 2000);
             });
         }
 
-        db.ref('comments').on('value', snapshot => {
-            const listEl = document.getElementById('comments-list');
+        // Onaylı Sunucuları Çek ve Listele
+        db.ref('approved_servers').on('value', snapshot => {
+            const listEl = document.getElementById('servers-list');
             listEl.innerHTML = '';
-            
-            let total = 0;
-            let count = 0;
 
             if(!snapshot.exists()) {
-                listEl.innerHTML = '<p style="color: var(--text-muted);">Henüz yorum yapılmamış.</p>';
+                listEl.innerHTML = '<p style="color: var(--text-muted);">Henüz onaylanmış bir sunucu yok.</p>';
                 return;
             }
 
             snapshot.forEach(child => {
-                const data = child.val();
-                total += data.score;
-                count++;
+                const srvId = child.key;
+                const srv = child.val();
 
-                const stars = '⭐'.repeat(data.score);
-                const item = document.createElement('div');
-                item.className = 'comment-item';
-                item.innerHTML = `
-                    <div class="comment-header">
-                        <span>${escapeHtml(data.nick)}</span>
-                        <span class="stars">${stars}</span>
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.innerHTML = `
+                    <div class="server-header">
+                        <div>
+                            <h3>${escapeHtml(srv.name)}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Mod: ${escapeHtml(srv.mod)}</p>
+                        </div>
+                        <span class="ip-badge">connect ${escapeHtml(srv.ip)}</span>
                     </div>
-                    <div>${escapeHtml(data.comment)}</div>
+                    
+                    <div class="comments-section">
+                        <h4>Yorumlar & Oylama</h4>
+                        <div id="comments-list-${srvId}" style="margin: 10px 0;">Yükleniyor...</div>
+                        
+                        <div style="background:#0f172a; padding:12px; border-radius:6px; margin-top:10px;">
+                            <div class="form-group" style="margin-bottom:8px;">
+                                <input type="text" id="nick-${srvId}" placeholder="Rumuz" value="${currentUser ? currentUser.displayName : ''}" ${currentUser ? 'readonly' : ''}>
+                            </div>
+                            <div class="form-group" style="margin-bottom:8px;">
+                                <select id="score-${srvId}">
+                                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                                    <option value="3">⭐⭐⭐ (3/5)</option>
+                                    <option value="2">⭐⭐ (2/5)</option>
+                                    <option value="1">⭐ (1/5)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:8px;">
+                                <textarea id="comment-${srvId}" rows="2" placeholder="Yorumunuz (Max 150 karakter)" maxlength="150" oninput="updateCounter('${srvId}')"></textarea>
+                                <div class="char-counter" id="counter-${srvId}">0 / 150</div>
+                            </div>
+                            <button class="btn" onclick="submitComment('${srvId}')">Yorum Yap & Oy Ver</button>
+                            <div class="msg" id="msg-${srvId}"></div>
+                        </div>
+                    </div>
                 `;
-                listEl.appendChild(item);
+                listEl.appendChild(card);
+                loadComments(srvId);
             });
-
-            document.getElementById('avg-score').innerText = `⭐ ${(total / count).toFixed(1)}`;
-            document.getElementById('total-count').innerText = count;
         });
 
+        function updateCounter(srvId) {
+            const len = document.getElementById(`comment-${srvId}`).value.length;
+            document.getElementById(`counter-${srvId}`).innerText = `${len} / 150`;
+        }
+
+        // Yorum Gönder
+        function submitComment(srvId) {
+            const nick = document.getElementById(`nick-${srvId}`).value.trim();
+            const score = parseInt(document.getElementById(`score-${srvId}`).value);
+            const comment = document.getElementById(`comment-${srvId}`).value.trim();
+            const msg = document.getElementById(`msg-${srvId}`);
+
+            if(!nick || !comment) { msg.className = 'msg msg-error'; msg.innerText = 'Rumuz ve yorum gerekli.'; return; }
+            if(!userIp) { msg.className = 'msg msg-error'; msg.innerText = 'IP Adresi doğrulanamadı.'; return; }
+
+            // Küfür Kontrolü
+            const containsBadWord = badWords.some(word => comment.toLowerCase().includes(word));
+            if(containsBadWord) { msg.className = 'msg msg-error'; msg.innerText = 'Yorumunuz uygunsuz ifadeler içeriyor.'; return; }
+
+            const cleanIp = userIp.replace(/\./g, "_");
+
+            // Banlı IP Kontrolü
+            db.ref('banned_ips/' + cleanIp).once('value', banSnap => {
+                if(banSnap.exists()) {
+                    msg.className = 'msg msg-error'; msg.innerText = '⛔ Yorum yapmanız engellenmiştir.';
+                    return;
+                }
+
+                // IP Tek Oy Kontrolü
+                db.ref(`votes/${srvId}/${cleanIp}`).once('value', voteSnap => {
+                    if(voteSnap.exists()) {
+                        msg.className = 'msg msg-error'; msg.innerText = 'Bu sunucuya zaten oy verdiniz.';
+                        return;
+                    }
+
+                    db.ref(`comments/${srvId}`).push({
+                        nick: nick,
+                        score: score,
+                        comment: comment,
+                        ip: userIp,
+                        timestamp: Date.now()
+                    }).then(() => {
+                        db.ref(`votes/${srvId}/${cleanIp}`).set(true);
+                        msg.className = 'msg msg-success'; msg.innerText = 'Yorumunuz eklendi!';
+                        document.getElementById(`comment-${srvId}`).value = '';
+                    });
+                });
+            });
+        }
+
+        // Yorumları Yükle
+        function loadComments(srvId) {
+            db.ref(`comments/${srvId}`).on('value', snapshot => {
+                const list = document.getElementById(`comments-list-${srvId}`);
+                list.innerHTML = '';
+
+                if(!snapshot.exists()) {
+                    list.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Henüz yorum yapılmamış.</p>';
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const c = child.val();
+                    const dateStr = new Date(c.timestamp).toLocaleString('tr-TR');
+                    const item = document.createElement('div');
+                    item.className = 'comment-item';
+                    item.innerHTML = `
+                        <div class="comment-header">
+                            <span><strong>${escapeHtml(c.nick)}</strong> - <span class="stars">${'⭐'.repeat(c.score)}</span></span>
+                            <span style="color:var(--text-muted); font-size:0.75rem;">${dateStr}</span>
+                        </div>
+                        <div style="font-size:0.9rem;">${escapeHtml(c.comment)}</div>
+                    `;
+                    list.appendChild(item);
+                });
+            });
+        }
+
         function escapeHtml(text) {
+            if(!text) return '';
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
