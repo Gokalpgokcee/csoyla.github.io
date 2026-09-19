@@ -263,16 +263,14 @@
                     <div class="ip-container">
                         <span class="ip-badge">connect 193.111.76.3:27015</span>
                         <button class="copy-btn" onclick="copyIp('193.111.76.3:27015', this)">IP Kopyala</button>
-                        
-                        <!-- LÜTFEN 'BURAYA_GOOGLE_FORM_LINKINI_YAPISTIR' YERINE KENDI FORM LINKINI YAZIN -->
-                        <a href="https://docs.google.com/forms/d/e/1FAIpQLScNj69GU0quc6OiyYjcDfoj_nxziCIMM37zDjw28Ermuc0Xkw/viewform?usp=header" target="_blank" class="review-btn">✍️ Yorum Yap & Oy Ver</a>
+                        <a href="https://forms.gle/SENIN_FORM_LINKIN" target="_blank" class="review-btn">✍️ Yorum Yap & Oy Ver</a>
                         <button class="toggle-btn" onclick="toggleComments()">💬 Onaylı Yorumlar</button>
                     </div>
                 </div>
                 <div class="server-actions">
                     <div class="rating-box">
                         <div class="rating-score" id="score-invicta">⭐ 5.0</div>
-                        <div class="rating-count" id="count-invicta">Yönetici Onaylı</div>
+                        <div class="rating-count" id="count-invicta">Yükleniyor...</div>
                     </div>
                     <span class="status-verified">✓ İncelendi</span>
                 </div>
@@ -292,7 +290,9 @@
     <footer>
         <p>&copy; 2026 CS 1.6 Sunucu Değerlendirme Platformu. Tüm hakları saklıdır.</p>
     </footer>
-<script>
+
+    <script>
+        // Yayınlanmış Google E-Tablo Adresin
         const sheetPubUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRF77XWVDZ7a0uc1EHIcrAhsZwQJWFjobHBiSmmmwcHy8EyCn8gl9WhhAIFKwncw6rXhUJu2UCA-udc/pubhtml';
 
         function copyIp(ip, btnElement) {
@@ -316,8 +316,9 @@
 
         async function fetchApprovedComments() {
             try {
-                // Önleme için rastgele parametre ekleyerek güncel veriyi çekiyoruz
-                const response = await fetch(sheetPubUrl + '?cachebust=' + new Date().getTime());
+                // Ön bellek engellemek için anlık zaman damgası ekliyoruz
+                const fetchUrl = sheetPubUrl + '?v=' + new Date().getTime();
+                const response = await fetch(fetchUrl);
                 const htmlText = await response.text();
 
                 const parser = new DOMParser();
@@ -328,18 +329,37 @@
                 let totalScore = 0;
 
                 rows.forEach((row) => {
-                    const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText.trim());
-                    
-                    // Satırda en az bir yerde "onay" kelimesi geçiyor mu kontrol et
-                    const isApproved = cells.some(cell => cell.toLowerCase().includes('onay'));
+                    // Boş olmayan hücreleri al
+                    const cells = Array.from(row.querySelectorAll('td'))
+                                     .map(td => td.innerText.trim())
+                                     .filter(text => text !== '');
 
-                    if (isApproved && cells.length >= 4) {
-                        // Esnek sütun çekme (Boş olmayan sütunları ayıklar)
-                        const contentCells = cells.filter(c => c !== '');
-                        
-                        const nick = contentCells[1] || 'Anonim';
-                        const score = parseFloat(contentCells[2]) || 5;
-                        const comment = contentCells[3] || 'Yorum yok';
+                    if (cells.length === 0) return;
+
+                    // Satırda "onay" geçen herhangi bir yer var mı kontrol et
+                    const isApproved = cells.some(c => c.toLowerCase().includes('onay'));
+
+                    if (isApproved) {
+                        // Zaman damgası hariç verileri eşleştir
+                        let nick = 'Anonim';
+                        let score = 5;
+                        let comment = '';
+
+                        // Hücreler içerisinden sayısal olanı Puan, uzun olanı Yorum al
+                        cells.forEach(val => {
+                            const num = parseFloat(val);
+                            if (!isNaN(num) && num >= 1 && num <= 5 && !val.includes('/') && !val.includes('.')) {
+                                score = num;
+                            } else if (val.length > 2 && !val.toLowerCase().includes('onay') && !val.includes(':')) {
+                                if (nick === 'Anonim') {
+                                    nick = val;
+                                } else {
+                                    comment = val;
+                                }
+                            }
+                        });
+
+                        if (comment === '') comment = nick; // Tek metin varsa yorum olarak geç
 
                         approvedComments.push({ nick, score, comment });
                         totalScore += score;
@@ -347,9 +367,11 @@
                 });
 
                 renderComments(approvedComments, totalScore);
+
             } catch (error) {
-                console.error("Yorumlar çekilirken hata oluştu:", error);
-                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Yorumlar yüklenirken bir sorun oluştu.</p>';
+                console.error("Hata:", error);
+                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Yorumlar şu an çekilemedi.</p>';
+                document.getElementById('count-invicta').innerText = '0 Oy';
             }
         }
 
@@ -360,6 +382,8 @@
 
             if (comments.length === 0) {
                 listEl.innerHTML = '<p class="no-comments">Henüz onaylanmış bir yorum bulunmuyor.</p>';
+                scoreEl.innerText = '⭐ 5.0';
+                countEl.innerText = '0 Onaylı Oy';
                 return;
             }
 
@@ -388,6 +412,9 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
+        // Sayfa yüklendiğinde çalıştır
         window.onload = fetchApprovedComments;
     </script>
-   
+
+</body>
+</html>
