@@ -346,7 +346,7 @@
             });
         }
 
-        // Yorumları Yükle
+        // Yorumları Yükle !
         function loadComments(srvId) {
             db.ref(`comments/${srvId}`).on('value', snapshot => {
                 const list = document.getElementById(`comments-list-${srvId}`);
